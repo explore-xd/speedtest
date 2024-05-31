@@ -1,0 +1,26 @@
+[
+  {
+    "name": "武汉-电信-云测节点-CN-5G",
+    "server": "//vipspeedtest8.wuhan.net.cn:8080",
+    "dlURL": "download",
+    "ulURL": "upload",
+    "pingURL": "hello",
+    "getIpURL": "ip"
+  },
+  {
+    "name": "四川-成都-电信-云测节点-CN-2",
+    "server": "//speedtest1.sc.189.cn.prod.hosts.ooklaserver.net:8080",
+    "dlURL": "download",
+    "ulURL": "upload",
+    "pingURL": "hello",
+    "getIpURL": "ip"
+  },
+  {
+    "name": "浙江-杭州-电信-云测节点-CN-1",
+    "server": "//cesu-hz.zjtelecom.com.cn.prod.hosts.ooklaserver.net:8080",
+    "dlURL": "download",
+    "ulURL": "upload",
+    "pingURL": "hello",
+    "getIpURL": "ip"
+  }
+]
