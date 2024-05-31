@@ -61,5 +61,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     implementation project(path: ':speedtest')
-//    implementation 'com.github.vipdss2023:speedtest:1.0.1'
+//    implementation 'com.github.explore-xd:speedtest:1.0.2'
 }
