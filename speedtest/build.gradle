@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'com.dss.speedtest'
+    namespace 'com.athena.speedtest'
     compileSdk 31
 
     defaultConfig {
