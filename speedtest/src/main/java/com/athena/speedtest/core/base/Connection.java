@@ -1,6 +1,7 @@
 package com.athena.speedtest.core.base;
 
 import android.os.Build;
+import android.util.Log;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,11 +10,19 @@ import java.io.PrintStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Locale;
 
 import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class Connection {
     private Socket socket;
@@ -65,13 +74,54 @@ public class Connection {
         }
         try {
             if (mode == MODE_NOT_SET && tryHTTPS) {
-                SocketFactory factory = SSLSocketFactory.getDefault();
+//                SocketFactory factory = SSLSocketFactory.getDefault();
+//                socket = factory.createSocket();
+//                if (connectTimeout > 0) {
+//                    socket.connect(new InetSocketAddress(host, port == -1 ? 443 : port), connectTimeout);
+//                } else {
+//                    socket.connect(new InetSocketAddress(host, port == -1 ? 443 : port));
+//                }
+                //忽略https证书验证
+                //获取SSLContext对象
+                SSLContext context = SSLContext.getInstance("TLS");
+                //设置管理器
+                context.init(null, new TrustManager[]{new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                        Log.d("Connection", "checkClientTrusted authType:" + authType);
+                    }
+
+                    @Override
+                    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                        Log.d("Connection", "checkServerTrusted authType:" + authType);
+                    }
+
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                }}, null);
+                final SSLSocketFactory factory = context.getSocketFactory();
+                //设置管理器
+                HttpsURLConnection.setDefaultSSLSocketFactory(factory);
+                HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+
+                    @Override
+                    public boolean verify(String hostName, SSLSession arg1) {
+                        //返回true
+//                        final boolean success = host.equalsIgnoreCase(hostName);
+//                        return success;
+                        return true;
+                    }
+                });
+
                 socket = factory.createSocket();
                 if (connectTimeout > 0) {
                     socket.connect(new InetSocketAddress(host, port == -1 ? 443 : port), connectTimeout);
                 } else {
                     socket.connect(new InetSocketAddress(host, port == -1 ? 443 : port));
                 }
+
                 mode = MODE_HTTPS;
             }
         } catch (Throwable t) {
